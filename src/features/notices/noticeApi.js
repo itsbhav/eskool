@@ -1,5 +1,4 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-// import {createFormDataFromObject} from '@redux-simple/toolkit'
 import { apiSlice } from "../../app/api/apiSlice";
 
 const noticesAdapter = createEntityAdapter({
@@ -11,16 +10,14 @@ const initialState = noticesAdapter.getInitialState();
 export const noticesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllNotices: builder.query({
-      query: () => ({
-        url: "/notices/get",
+      query: (pageNum) => ({
+        url: `/public/notice?pageNum=${pageNum}`,
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError;
         },
       }),
       transformResponse: (responseData) => {
         const loadedNotices = responseData.map((notice) => {
-          // notice.id = notice.id;
-          // console.log(notice)
           return notice;
         });
         return noticesAdapter.setAll(initialState, loadedNotices);
@@ -41,46 +38,22 @@ export const noticesApiSlice = apiSlice.injectEndpoints({
     }),
     addNewNotice: builder.mutation({
       query: (initialNotice) => {
-        // const body = createFormDataFromObject(initialNotice);
         return {
-          url: "/notices",
+          url: "/admin/notices",
           method: "POST",
-          body:initialNotice
-        }
-        
+          body: initialNotice,
+        };
       },
       invalidatesTags: [{ type: "Notice", id: "LIST" }],
     }),
-
     deleteNotice: builder.mutation({
       query: ({ id }) => ({
-        url: `/notices`,
+        url: `/admin/notices`,
         method: "DELETE",
         body: { id },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Notice", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: "Notice", id: "LIST" }],
     }),
-
-    getUploadUrl: builder.mutation({
-      query: (data) => {
-       console.log("hii",data)
-       return  (
-          {
-            url: '/lectures/upload',
-            method: "POST",
-            body: { ...data }
-          })
-      }
-    }),
-
-    videoData: builder.mutation({
-      query: (data) => ({
-        url: '/lectures/upload/data',
-        method: "POST",
-        body: { ...data }
-      })
-    })
-
   }),
 });
 
@@ -88,8 +61,6 @@ export const {
   useAddNewNoticeMutation,
   useDeleteNoticeMutation,
   useGetAllNoticesQuery,
-  useGetUploadUrlMutation,
-  useVideoDataMutation
 } = noticesApiSlice;
 
 // returns the query result object

@@ -1,5 +1,4 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-// import {createFormDataFromObject} from '@redux-simple/toolkit'
 import { apiSlice } from "../../app/api/apiSlice";
 
 const advertisementsAdapter = createEntityAdapter({
@@ -11,16 +10,14 @@ const initialState = advertisementsAdapter.getInitialState();
 export const advertisementsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getAllAdvertisements: builder.query({
-      query: () => ({
-        url: "/advertisements/get",
+      query: (pageNum) => ({
+        url: `/public/advertisement?pageNum=${pageNum}`,
         validateStatus: (response, result) => {
           return response.status === 200 && !result.isError;
         },
       }),
       transformResponse: (responseData) => {
         const loadedAdvertisements = responseData.map((advertisement) => {
-          // advertisement.id = advertisement.id;
-          // console.log(advertisement)
           return advertisement;
         });
         return advertisementsAdapter.setAll(initialState, loadedAdvertisements);
@@ -41,24 +38,24 @@ export const advertisementsApiSlice = apiSlice.injectEndpoints({
     }),
     addNewAdvertisement: builder.mutation({
       query: (initialAdvertisement) => {
-        // console.log("hii")
-        // const body = createFormDataFromObject(initialAdvertisement);
+        // console.log(initialAdvertisement)
         return {
-          url: "/advertisements",
+          url: "/admin/advertisements",
           method: "POST",
-          body:initialAdvertisement
-        }
-        
+          body: initialAdvertisement,
+        };
       },
       invalidatesTags: [{ type: "Advertisement", id: "LIST" }],
     }),
     deleteAdvertisement: builder.mutation({
       query: ({ id }) => ({
-        url: `/advertisements`,
+        url: `/admin/advertisements`,
         method: "DELETE",
         body: { id },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Advertisement", id: arg.id }],
+      invalidatesTags: (result, error, arg) => [
+        { type: "Advertisement", id: "LIST" },
+      ],
     }),
   }),
 });
@@ -70,12 +67,12 @@ export const {
 } = advertisementsApiSlice;
 
 // returns the query result object
-export const selectAdvertismentsResult =
+export const selectAdvertisementsResult =
   advertisementsApiSlice.endpoints.getAllAdvertisements.select();
 
 // creates memoized selector
 const selectAdvertisementsData = createSelector(
-  selectAdvertismentsResult,
+  selectAdvertisementsResult,
   (advertisementsResult) => advertisementsResult.data // normalized state object with ids & entities
 );
 
@@ -84,7 +81,7 @@ export const {
   selectAll: selectAllAdvertisements,
   selectById: selectAdvertisementById,
   selectIds: selectAdvertisementIds,
-  // Pass in a selector that returns the advertisments slice of state
+  // Pass in a selector that returns the advertisements slice of state
 } = advertisementsAdapter.getSelectors(
   (state) => selectAdvertisementsData(state) ?? initialState
 );
