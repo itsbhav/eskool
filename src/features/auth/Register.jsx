@@ -142,6 +142,10 @@ const Register = () => {
             required
           />
           <label htmlFor="email">Email:</label>
+          <div>
+            Please Provide correct mail id. You need to verify your mail to
+            access portal via mail sent to you after registartion.
+          </div>
           <input
             className="form__input"
             type="email"
@@ -150,6 +154,7 @@ const Register = () => {
             onChange={handleEmail}
             required
           />
+
           {type === process.env.REACT_APP_TEACHER && (
             <>
               <label htmlFor="institute">Institute:</label>
