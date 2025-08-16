@@ -64,17 +64,35 @@ const DashHeader = () => {
               <>
                 {}
                 {!useremail && (
-                  <Link to={"/course"}>
-                    <button
-                      className="dash-header__title button"
-                      style={{ margin: "0.3rem 0 0 0" }}
-                    >
-                      Our Courses
-                    </button>
-                  </Link>
+                  <>
+                    <Link to={"/instructions"}>
+                      <button
+                        className="dash-header__title button"
+                        style={{ margin: "0.3rem 0 0 0" }}
+                      >
+                        instructions
+                      </button>
+                    </Link>
+                    <Link to={"/course"}>
+                      <button
+                        className="dash-header__title button"
+                        style={{ margin: "0.3rem 0 0 0" }}
+                      >
+                        Our Courses
+                      </button>
+                    </Link>
+                  </>
                 )}
                 {useremail.length ? (
                   <>
+                    <Link to={"/instructions"}>
+                      <button
+                        className="dash-header__title button"
+                        style={{ margin: "0.3rem 0 0 0" }}
+                      >
+                        instructions
+                      </button>
+                    </Link>
                     <Link to={"/courses"}>
                       <button
                         className="dash-header__title button"
