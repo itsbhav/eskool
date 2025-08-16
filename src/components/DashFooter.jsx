@@ -46,6 +46,12 @@ const DashFooter = () => {
           &copy; {year} | All Rights Reserved | eSkool
         </div>
         <div className="footer-div">
+          First Release {process.env.REACT_APP_FIRST_RELEASE}
+        </div>
+        <div className="footer-div">
+          Latest Update {process.env.REACT_APP_LATEST_UPDATE}
+        </div>
+        <div className="footer-div">
           <Link to={"/instructions"}>
             <button className="button">instructions</button>
           </Link>
