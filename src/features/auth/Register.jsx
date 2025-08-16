@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import usePersist from "../../hooks/usePersist";
 import useTitle from "../../hooks/useTitle";
 import PulseLoader from "react-spinners/PulseLoader";
 import { useAddNewStudentMutation } from "../user/userApi";
@@ -15,7 +14,6 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [persist, setPersist] = usePersist();
   const [inhouse, setInhouse] = useState(true);
   const [classid, setClassid] = useState(0);
   const [institute, setInstitute] = useState("");
