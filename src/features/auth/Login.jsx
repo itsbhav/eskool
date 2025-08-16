@@ -52,7 +52,7 @@ const Login = () => {
       } else if (err.status === 400) {
         setErrMsg("Missing Email or Password");
       } else if (err.status === 401) {
-        setErrMsg("Unauthorized");
+        setErrMsg(err.data?.message ||  "Unauthorized");
       } else {
         setErrMsg(err.data?.message);
       }

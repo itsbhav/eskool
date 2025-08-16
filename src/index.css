@@ -46,6 +46,14 @@
   padding: 0.25em;
   margin-bottom: 0.5em;
 }
+
+.msgClass{
+  display: inline-block;
+  /* background-color: var(--TABLE-BGCOLOR); */
+  /* color: var(--ERROR); */
+  padding: 0.25em;
+  margin-bottom: 0.5em;
+}
 .padding{
   padding: 1rem;
 }

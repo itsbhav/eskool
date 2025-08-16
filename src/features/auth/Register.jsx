@@ -1,7 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { setCredentials } from "./authSlice";
 import usePersist from "../../hooks/usePersist";
 import useTitle from "../../hooks/useTitle";
 import PulseLoader from "react-spinners/PulseLoader";
@@ -23,9 +20,7 @@ const Register = () => {
   const [classid, setClassid] = useState(0);
   const [institute, setInstitute] = useState("");
   const [type, setType] = useState(process.env.REACT_APP_USER);
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [msg, setMsg] = useState("");
 
   const [addNewUser, { isLoading, isError, error, isSuccess }] =
     useAddNewStudentMutation();
@@ -54,24 +49,24 @@ const Register = () => {
     e.preventDefault();
     try {
       if (type === process.env.REACT_APP_USER) {
-        const { accessToken } = await addNewUser({
+        const { message} = await addNewUser({
           name,
           pass: password,
-          persist,
           inhouse,
           class_id: classid,
           email,
         }).unwrap();
-        dispatch(setCredentials({ accessToken }));
+        setMsg(message);
+        // dispatch(setCredentials({ accessToken }));
       } else if (type === process.env.REACT_APP_TEACHER) {
-        const { accessToken } = await addNewTeacher({
+        const { message} = await addNewTeacher({
           name,
           pass: password,
-          persist,
           institution: institute,
           email,
         }).unwrap();
-        dispatch(setCredentials({ accessToken }));
+        setMsg(message);
+        // dispatch(setCredentials({ accessToken }));
       }
       setName("");
       setPassword("");
@@ -79,7 +74,7 @@ const Register = () => {
       setClassid(0);
       setInhouse(true);
       setInstitute("");
-      navigate("/dash");
+      // navigate("/dash");
     } catch (err) {
       if (!err.status) {
         setErrMsg("No Server Response");
@@ -96,13 +91,13 @@ const Register = () => {
 
   const handleUserInput = (e) => setName(e.target.value);
   const handlePwdInput = (e) => setPassword(e.target.value);
-  const handleToggle = () => setPersist((prev) => !prev);
   const handleType = (e) => setType(e.target.value);
   const handleInst = (e) => setInstitute(e.target.value);
   const handleEmail = (e) => setEmail(e.target.value);
   const handleInHouse = () => setInhouse((prev) => !prev);
   const handleClass = (e) => setClassid(e.target.value);
   const errClass = errMsg ? "errmsg" : "offscreen";
+  const msgClass = msg ? "msgClass" : "offscreen";
 
   if (isLoading || isTLoading) return <PulseLoader color={"#FFF"} />;
   const content = (
@@ -113,6 +108,9 @@ const Register = () => {
       <main className="login">
         <p ref={errRef} className={errClass} aria-live="assertive">
           {errMsg}
+        </p>
+        <p ref={errRef} className={msgClass} aria-live="assertive">
+          {msg}
         </p>
         <label htmlFor="type">
           Type of Account:
@@ -142,10 +140,6 @@ const Register = () => {
             required
           />
           <label htmlFor="email">Email:</label>
-          <div>
-            Please Provide correct mail id. You need to verify your mail to
-            access portal via mail sent to you after registartion.
-          </div>
           <input
             className="form__input"
             type="email"
@@ -216,17 +210,6 @@ const Register = () => {
             </>
           )}
           <button className="form__submit-button">Sign Up</button>
-
-          <label htmlFor="persist" className="form__persist">
-            <input
-              type="checkbox"
-              className="form__checkbox"
-              id="persist"
-              onChange={handleToggle}
-              checked={persist}
-            />
-            Trust This Device
-          </label>
         </form>
       </main>
     </section>
